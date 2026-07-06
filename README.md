@@ -45,20 +45,24 @@ The shared database/auth/storage live in a Supabase project (URL + anon key are 
    create policy "auth delete"  on posts for delete to authenticated using (true);
    ```
 
-2. **Media storage** — create a public bucket `media`, then:
+2. **Media storage** — create a **public** bucket `media`. Set its **file size limit to at least 50 MB** (Storage → `media` → Configuration) and either leave **Allowed MIME types** empty (any type) or include `image/*` **and** `video/mp4` — otherwise video uploads are rejected. Then:
    ```sql
    create policy "media public read" on storage.objects for select using (bucket_id = 'media');
    create policy "media auth write"  on storage.objects for insert to authenticated with check (bucket_id = 'media');
    ```
+   > If Storage isn't set up yet, the Studio still works — video is kept in the post locally so you can preview it; it just won't appear on the live site until Storage accepts the upload.
 
 3. **Newsroom login** — Authentication → Users → Add user (Auto Confirm). This is the Studio sign-in.
 
-4. **Facebook / Instagram** — deploy the Edge Function and set its secrets:
+4. **Facebook / Instagram** — deploy the Edge Function:
    ```bash
    supabase functions deploy social-publish
-   supabase secrets set META_PAGE_ID=... META_PAGE_TOKEN=... META_IG_USER_ID=...
    ```
-   (Instagram publishing needs a public image URL — that's why media uploads go to Storage.)
+   Then connect your accounts one of two ways:
+   - **From the Studio (recommended):** open **Connections**, paste your Facebook Page ID, a long-lived Page access token, and (optional) Instagram Business account ID, and hit **Test connection**. Credentials are stored in that browser only and sent to the Edge Function per request — they never touch the public `posts` table or the live site.
+   - **As server secrets (shared):** `supabase secrets set META_PAGE_ID=... META_PAGE_TOKEN=... META_IG_USER_ID=...` — used as a fallback when the Studio doesn't send credentials.
+
+   The token needs **pages_manage_posts** (Facebook) and **instagram_content_publish** (Instagram). Instagram publishing needs a public image URL — that's why media uploads go to Storage.
 
 ## Brand
 
