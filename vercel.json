@@ -2,6 +2,7 @@
   "rewrites": [
     { "source": "/studio", "destination": "/studio/index.html" },
     { "source": "/studio/(.*)", "destination": "/studio/index.html" },
+    { "source": "/a/:id", "destination": "/api/a?id=:id" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
