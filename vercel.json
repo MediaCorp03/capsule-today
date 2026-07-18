@@ -1,18 +1,7 @@
 {
-  "cleanUrls": true,
-  "trailingSlash": false,
   "rewrites": [
     { "source": "/studio", "destination": "/studio/index.html" },
     { "source": "/studio/(.*)", "destination": "/studio/index.html" },
-    { "source": "/a/(.*)", "destination": "/index.html" },
-    { "source": "/archive", "destination": "/index.html" }
-  ],
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" }
-      ]
-    }
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
